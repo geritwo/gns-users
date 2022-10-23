@@ -1,0 +1,4 @@
+Flask==2.2.2
+Flash-HTTPAuth==4.7.0
+Flask-SQLAlchemy==3.0.2
+Werkzeug==2.2.2
