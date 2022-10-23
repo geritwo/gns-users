@@ -41,13 +41,13 @@ def list_users():
     pass
 
 
-@app.route("api/users/<int:id>", methods=['PUT', 'DELETE'])
+@app.route("/api/users/<int:id>", methods=['PUT', 'DELETE'])
 # Update or delete user
 def update_user():
     pass
 
 
-@app.route("api/login")
+@app.route("/api/login")
 @auth.login_required
 def get_profile():
     return f"Hello, {auth.current_user()}! Login successful"
