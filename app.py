@@ -32,13 +32,18 @@ class User(db.Model):
 
 @app.route("/", methods=['GET'])
 def hello():
+    # Just to make sure server is running
     return "<p>Hello World!</p>"
 
 
 @app.route("/api/users", methods=['GET', 'POST'])
 # List users or add user
-def list_users():
-    pass
+def list_add_users():
+    if request.method == 'GET':
+        users = User.query.all()
+        return users
+    if request.method == 'POST':
+        pass
 
 
 @app.route("/api/users/<int:id>", methods=['PUT', 'DELETE'])
