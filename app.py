@@ -30,6 +30,14 @@ class User(db.Model):
     def verify_password(self, password):
         return check_password_hash(self.password_hash, password)
 
+    def get_user_details(self):
+        return {
+            'id': self.id,
+            'username': self.username,
+            'email': self.email,
+            'last_login': self.last_login if self.last_login else "Never"
+        }
+
 
 @app.route("/", methods=['GET'])
 def hello():
@@ -42,7 +50,7 @@ def hello():
 def list_add_users():
     if request.method == 'GET':
         users = User.query.all()
-        return [user.username for user in users]
+        return [user.get_user_details() for user in users]
     if request.method == 'POST':
         username = request.args['username']
         email = request.args['email']
