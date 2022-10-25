@@ -1,5 +1,5 @@
 import os
-from flask import Flask, request, jsonify
+from flask import Flask, request, abort, jsonify
 from flask_httpauth import HTTPBasicAuth
 from flask_sqlalchemy import SQLAlchemy
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -44,10 +44,23 @@ def list_add_users():
         users = User.query.all()
         return [user.username for user in users]
     if request.method == 'POST':
-        # TODO: Check required parameters
+        username = request.args['username']
+        email = request.args['email']
+        password = request.args['password']
+
+        # Validate parameters
+        if username is None or password is None or email is None:
+            abort(400)
+        if User.query.filter_by(username=username).first() is not None:
+            return "Error: Username already exists"  # NOTE: Forgot password?
+
+        if User.query.filter_by(email=email).first() is not None:
+            return "Error: Email address already exists"  # NOTE: Forgot username?
+
+        # Store user in db
         user = User(
-            username=request.args['username'],
-            email=request.args['email'],
+            username=username,
+            email=email,
             last_login=None
         )
         user.hash_password(request.args['password'])
