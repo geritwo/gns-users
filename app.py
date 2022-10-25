@@ -40,7 +40,7 @@ class User(db.Model):
             'id': self.id,
             'username': self.username,
             'email': self.email,
-            'last_login': self.last_login if self.last_login else "Never"
+            'last_login': self.last_login
         }
 
     def get_last_login(self):
@@ -103,11 +103,9 @@ def update_delete_user():
 @app.route("/api/login")
 @auth.login_required()
 def get_profile():
-    user = User(username=auth.current_user(),
-                last_login=dt.utcnow())
-    #user.set_login_time()
+    g.user.last_login = dt.utcnow()
     db.session.commit()
-    return f"Hello, {user.username}! Login successful at {user.last_login}"
+    return f"Hello, {g.user.username}! Login successful at {g.user.last_login}"
 
 
 if __name__ == '__main__':
