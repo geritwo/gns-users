@@ -3,6 +3,7 @@ from flask import Flask, request, jsonify
 from flask_httpauth import HTTPBasicAuth
 from flask_sqlalchemy import SQLAlchemy
 from werkzeug.security import generate_password_hash, check_password_hash
+from datetime import datetime as dt
 
 # Init app
 app = Flask(__name__)
@@ -41,14 +42,23 @@ def hello():
 def list_add_users():
     if request.method == 'GET':
         users = User.query.all()
-        return users
+        return [user.username for user in users]
     if request.method == 'POST':
-        pass
+        # TODO: Check required parameters
+        user = User(
+            username=request.args['username'],
+            email=request.args['email'],
+            last_login=None
+        )
+        user.hash_password(request.args['password'])
+        db.session.add(user)
+        db.session.commit()
+        return f"User {user.username} added"
 
 
 @app.route("/api/users/<int:id>", methods=['PUT', 'DELETE'])
 # Update or delete user
-def update_user():
+def update_delete_user():
     pass
 
 
@@ -61,5 +71,6 @@ def get_profile():
 if __name__ == '__main__':
     if not os.path.exists('db.sqlite'):
         with app.app_context():
+            db.drop_all()
             db.create_all()
-    app.run(debug=True)
+    app.run(port=9001, debug=True)
