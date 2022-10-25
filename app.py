@@ -96,6 +96,12 @@ def list_add_users():
 
 @app.route("/api/users/<int:id>", methods=['PUT', 'DELETE'])
 # Update or delete user
+'''
+TODO:
+- Identify method
+- Instantiate user object
+- Update or delete with appropriate SQLAlchemy function
+'''
 def update_delete_user():
     pass
 
