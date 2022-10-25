@@ -1,5 +1,6 @@
+import datetime
 import os
-from flask import Flask, request, abort, jsonify
+from flask import Flask, request, abort, jsonify, g
 from flask_httpauth import HTTPBasicAuth
 from flask_sqlalchemy import SQLAlchemy
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -13,7 +14,7 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///db.sqlite'
 # Extensions
 db = SQLAlchemy(app)
 db.init_app(app)
-auth = HTTPBasicAuth
+auth = HTTPBasicAuth()
 
 
 class User(db.Model):
@@ -30,6 +31,9 @@ class User(db.Model):
     def verify_password(self, password):
         return check_password_hash(self.password_hash, password)
 
+    def set_login_time(self):
+        self.last_login = dt.utcnow()
+
     def get_user_details(self):
         return {
             'id': self.id,
@@ -37,6 +41,18 @@ class User(db.Model):
             'email': self.email,
             'last_login': self.last_login if self.last_login else "Never"
         }
+
+    def get_last_login(self):
+        return self.last_login
+
+
+@auth.verify_password
+def verify_password(username, password):
+    user = User.query.filter_by(username=username).first()
+    if not user or not user.verify_password(password):
+        return False
+    g.user = user  # Add user to Flask global context
+    return True
 
 
 @app.route("/", methods=['GET'])
@@ -84,9 +100,11 @@ def update_delete_user():
 
 
 @app.route("/api/login")
-@auth.login_required
+@auth.login_required()
 def get_profile():
-    return f"Hello, {auth.current_user()}! Login successful"
+    user = User(username=auth.current_user())
+    user.set_login_time()
+    return f"Hello, {user.username}! Login successful at {user.get_last_login()}"
 
 
 if __name__ == '__main__':
