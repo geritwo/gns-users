@@ -5,7 +5,9 @@
 I used Flask because I have wanted to try it for long but since I was not experienced with REST API design - I mainly 
 used, not created any APIs for Python devtools - I decided I'd go as I would naturally go with it and Googled heavily.
 
-Did it in 3 sittings, you may see it from the commit history. To sum it up:
+Did it in 3 sittings, you may see it from the commit history. _Update:_ The first sitting was intended to be 3 hours long but it was hintered by an Interned outage of more than an hour meaning no commits, no pip packages, no manuals available. The second and third sittings was also very lifelike 2 days later with kid, deliveries, lunch break and repair man interrupting it so in _gross_ lifelike home office working hours it was roughly 6 hours to complete with Flask and its modules I've never used of and I didn't have the time to cheat, meaning look up docs when not working on it because of family and well, work.
+
+To sum the coding workflow up:
 
 1. I wanted to use Flask to create server easily but didn't know how to create simple backend with no UI. I aimed to create the API endpoints first and then DB I was not familiar with authentication or how the requests should be handled so I had to look up
 [a suitable example](https://github.com/miguelgrinberg/REST-auth/blob/master/api.py) and tailored it to the assignment.
