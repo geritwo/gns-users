@@ -8,6 +8,7 @@ from datetime import datetime as dt
 
 # Init app
 app = Flask(__name__)
+app.config['SECRET_KEY'] = 'Han shot first'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///db.sqlite'
 
 
@@ -102,9 +103,11 @@ def update_delete_user():
 @app.route("/api/login")
 @auth.login_required()
 def get_profile():
-    user = User(username=auth.current_user())
-    user.set_login_time()
-    return f"Hello, {user.username}! Login successful at {user.get_last_login()}"
+    user = User(username=auth.current_user(),
+                last_login=dt.utcnow())
+    #user.set_login_time()
+    db.session.commit()
+    return f"Hello, {user.username}! Login successful at {user.last_login}"
 
 
 if __name__ == '__main__':
